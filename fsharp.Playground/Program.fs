@@ -16,12 +16,19 @@ module WebGateway =
         }
 
     let dnsLookup (uri:Uri) =
+        let rec isNestedSocketException (e:Exception) =
+            match e with
+            | :? AggregateException as ae ->
+                ae.InnerException :: Seq.toList ae.InnerExceptions
+                |> Seq.exists isNestedSocketException
+            | :? SocketException -> true
+            | _ -> false
         async {
             try
                 let! _ = Dns.GetHostAddressesAsync uri.DnsSafeHost |> Async.AwaitTask
                 return Some uri
-            with
-            | :? SocketException -> return None                
+            with e when isNestedSocketException e ->
+                return None                
         }
         // version with Async.Catch
 
