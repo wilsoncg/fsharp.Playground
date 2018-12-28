@@ -1,8 +1,11 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open System
+open System.Net
 
 module WebGateway =
+    open System.Net.Sockets
+
     let fetch (url:Uri) =
         async {
             use client = new System.Net.Http.HttpClient()
@@ -12,6 +15,25 @@ module WebGateway =
             return content
         }
 
+    let dnsLookup (uri:Uri) =
+        async {
+            try
+                let! _ = Dns.GetHostAddressesAsync uri.DnsSafeHost |> Async.AwaitTask
+                return Some uri
+            with
+            | :? SocketException -> return None                
+        }
+        // version with Async.Catch
+
+    let isValidUri uri =
+        let kind = UriKind.RelativeOrAbsolute
+        if Uri.IsWellFormedUriString(uri,kind) then 
+            Some <| Uri uri
+        else
+            None
+    let isValidRemoteHost uri =
+        dnsLookup uri |> Async.RunSynchronously 
+
 open WebGateway
 [<EntryPoint>]
 let main argv =
@@ -19,15 +41,20 @@ let main argv =
         "http://www.google.co.uk" 
         "http://www.google.couk"
         "http:////www.google.couk"]
-    urls |> 
-        Seq.map Uri |> 
+    
+    let run = 
+        urls |> 
+        Seq.map isValidUri |> 
+        Seq.choose id |>
+        Seq.map isValidRemoteHost |>
+        Seq.choose id |>
         Seq.map (fun f -> 
             printfn "Fetching from %s" f.OriginalString
             f) |>
         Seq.iter (fun f -> 
             let content = Async.RunSynchronously <| fetch f
-            printfn "Got result: %s"|> ignore)
-    
+            printfn "Got result: %s" content |> ignore)
+    run
     //let uri = new Uri(url)
     //printfn "Fetching from %s" url    
     //let content = Async.RunSynchronously <| fetch uri 
