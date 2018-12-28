@@ -33,11 +33,9 @@ module WebGateway =
         // version with Async.Catch
 
     let isValidUri uri =
-        let kind = UriKind.RelativeOrAbsolute
-        if Uri.IsWellFormedUriString(uri,kind) then 
-            Some <| Uri uri
-        else
-            None
+        match Uri.IsWellFormedUriString(uri, UriKind.RelativeOrAbsolute) with
+        | true -> Some <| Uri uri
+        | false -> None
     let isValidRemoteHost uri =
         dnsLookup uri |> Async.RunSynchronously 
 
