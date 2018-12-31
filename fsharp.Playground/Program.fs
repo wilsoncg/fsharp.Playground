@@ -2,66 +2,54 @@
 
 open System
 open System.Net
-
-module WebGateway =
-    open System.Net.Sockets
-
-    let fetch (url:Uri) =
-        async {
-            use client = new System.Net.Http.HttpClient()
-            let! response = client.GetAsync(url) |> Async.AwaitTask
-            response.EnsureSuccessStatusCode |> ignore
-            let! content = response.Content.ReadAsStringAsync() |> Async.AwaitTask
-            return content
-        }
-
-    let dnsLookup (uri:Uri) =
-        let rec isNestedSocketException (e:Exception) =
-            match e with
-            | :? AggregateException as ae ->
-                ae.InnerException :: Seq.toList ae.InnerExceptions
-                |> Seq.exists isNestedSocketException
-            | :? SocketException -> true
-            | _ -> false
-        async {
-            try
-                let! _ = Dns.GetHostAddressesAsync uri.DnsSafeHost |> Async.AwaitTask
-                return Some uri
-            with e when isNestedSocketException e ->
-                return None                
-        }
-        // version with Async.Catch
-
-    let isValidUri uri =
-        match Uri.IsWellFormedUriString(uri, UriKind.RelativeOrAbsolute) with
-        | true -> Some <| Uri uri
-        | false -> None
-    let isValidRemoteHost uri =
-        dnsLookup uri |> Async.RunSynchronously 
-
 open WebGateway
+
 [<EntryPoint>]
 let main argv =
     let urls = [
         "http://www.google.co.uk" 
         "http://www.google.couk"
         "http:////www.google.couk"]
+        
+    // https://github.com/fsharp/fsharp/blob/master/src/fsharp/FSharp.Core/seq.fs
+    let asyncChoose (s:seq<_>) =
+        async {
+            use e = s.GetEnumerator()
+            let r = ref None
+            while Option.isNone(!r) && e.MoveNext() do
+                let! x = e.Current
+                r := x
+            match !r with
+            | Some z -> return z
+            | None -> return failwith "no matching item found"
+        }
     
+    // match!
+    // https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/computation-expressions#match
+    //let chooser (u:Uri) =
+    //    async {
+    //        match! isValidRemoteHost u with
+    //        | Some x -> x
+    //        | None -> ...
+    //    }
+    let asyncMap f x = async {
+        let! x' = x
+        return f x'
+    }
+    // using seq<'a>
     let run = 
-        urls |> 
-        Seq.map isValidUri |> 
-        Seq.choose id |>
-        Seq.map isValidRemoteHost |>
-        Seq.choose id |>
-        Seq.map (fun f -> 
-            printfn "Fetching from %s" f.OriginalString
-            f) |>
-        Seq.iter (fun f -> 
-            let content = Async.RunSynchronously <| fetch f
-            printfn "Got result: %s" content |> ignore)
+        urls 
+        |> Seq.choose isValidUri 
+        |> Seq.map isValidRemoteHost
+        // Async<Uri option> -> Uri Option
+        |> Seq.map (fun f -> f |> Async.RunSynchronously)        
+        |> Seq.map fetch 
+        |> Async.Parallel
+        |> Async.RunSynchronously 
+        |> Seq.iter (fun s -> printfn "Got result: %s" s)
     run
-    //let uri = new Uri(url)
-    //printfn "Fetching from %s" url    
-    //let content = Async.RunSynchronously <| fetch uri 
-    //printfn "Got result: %s" content
+
+    // possible example using AsyncSeq<'a>
+    // https://fsprojects.github.io/FSharp.Control.AsyncSeq/library/AsyncSeq.html
+
     0 // return an integer exit code
