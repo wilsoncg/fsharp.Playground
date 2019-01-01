@@ -6,6 +6,8 @@
 
     type httpClient() = inherit HttpClient()
 
+    // possibly use 'using' keyword to pass in IDisposable httpClient
+    // timeout results in TaskCancelled exception which is not handled correctly
     let fetch (url:Uri Option) =
         match url with
         | None -> async { return String.Empty }
