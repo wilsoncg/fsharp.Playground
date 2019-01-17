@@ -28,7 +28,10 @@ let urls' = asyncSeq {
       yield { url = u.url; content = Some c }
      with _ ->
       yield { url = u.url; content = None }
-} 
+}
+
+//let htmlHead html =
+//    html |> String.
 
 // Elements are evaluate asynchronously which could take some time,
 // so use async to avoid blocking

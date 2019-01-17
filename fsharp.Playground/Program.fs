@@ -29,11 +29,11 @@ let main argv =
         match x.Key with 
         | ConsoleKey.S -> 
             printfn "Run (s)"
-            time (SeqExample.run)
+            SeqExample.run
             None
         | ConsoleKey.A -> 
             printfn "Run (a)"
-            time (AsyncSeqExample.run)
+            AsyncSeqExample.run
             None
         | ConsoleKey.Escape -> Some x.Key
         | ConsoleKey.Q -> Some x.Key
