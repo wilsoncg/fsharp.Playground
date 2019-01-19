@@ -33,7 +33,7 @@ let main argv =
             None
         | ConsoleKey.A -> 
             printfn "Run (a)"
-            AsyncSeqExample.run
+            AsyncSeqExample.run |> Async.Start
             None
         | ConsoleKey.Escape -> Some x.Key
         | ConsoleKey.Q -> Some x.Key

@@ -25,20 +25,22 @@ let urls' = asyncSeq {
     for u in urls do 
      try 
       let! c = getContent u
-      yield { url = u.url; content = Some c }
+      let c' = if String.IsNullOrWhiteSpace(c) then None else Some c
+      yield { url = u.url; content = c' }
      with _ ->
       yield { url = u.url; content = None }
 }
 
-//let htmlHead html =
-//    html |> String.
+let htmlHead (html:string) =
+    let index = html.IndexOf("<head>")
+    html |> Seq.skip index |> Seq.take 100 |> String.Concat
 
-// Elements are evaluate asynchronously which could take some time,
+// Elements are evaluated asynchronously which could take some time,
 // so use async to avoid blocking
 let run = 
     async {
         for u in urls' do
         match u.content with
-        | Some c -> printfn "%s" c
+        | Some c -> printfn "url %s \n %s" u.url (htmlHead c)
         | None -> printfn "no content for %s" u.url
-    } |> Async.Start
+    }
