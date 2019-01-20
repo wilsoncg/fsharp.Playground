@@ -2,6 +2,7 @@
 
 open System
 open System.Threading
+open FSharpPlus.Data
 
 [<EntryPoint>]
 let main argv =
@@ -23,6 +24,7 @@ let main argv =
         printfn "(Esc)ape, Ctrl-c or (q)uit."
         printfn "run (s)equence example"
         printfn "run (a)sync sequence example"
+        printfn "run (w)riter example"
         Console.ReadKey(true) // console blocked while waiting for input
     let readKeys = Seq.initInfinite(fun _ -> action())
     let parse (x:ConsoleKeyInfo) =
@@ -34,6 +36,12 @@ let main argv =
         | ConsoleKey.A -> 
             printfn "Run (a)"
             AsyncSeqExample.run |> Async.Start
+            None
+        | ConsoleKey.W -> 
+            printfn "Run (w)"
+            let w = WriterMonadExample.writerWithLog 3 5 |> Writer.run
+            match w with
+            | (r, log) -> printfn "result %i" r; printfn "log"; log |> Seq.iter (printfn "%s")
             None
         | ConsoleKey.Escape -> Some x.Key
         | ConsoleKey.Q -> Some x.Key

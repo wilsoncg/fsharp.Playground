@@ -13,3 +13,15 @@
 module WriterMonadExample
 
 open FSharpPlus
+open FSharpPlus.Data
+
+let logNumber x =
+    Writer (x, ["Got number: " + (x |> string)])
+
+let writerWithLog a b = 
+    monad {
+     let! a' = logNumber a
+     let! b' = logNumber b
+     do! tell ["multiplied both numbers"]
+     return (a'*b')
+    }
