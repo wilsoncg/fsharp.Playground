@@ -6,17 +6,6 @@ open FSharp.Control
 
 // https://fsprojects.github.io/FSharp.Control.AsyncSeq/library/AsyncSeq.html
 
-type WebPage = {
-    url : string
-    content : string Option
-}
-
-let urls = [
-    { url="https://www.google.co.uk"; content=None }
-    { url="https://news.bbc.co.uk"; content=None }
-    { url="https://www.guardian.co.uk"; content=None }
-    { url="https://www.theregister.co.uk"; content=None }]
-
 let getContent (page:WebPage) = 
     //fetch (Some (Uri page.url))
     page.url |> Uri |> Some |> fetch

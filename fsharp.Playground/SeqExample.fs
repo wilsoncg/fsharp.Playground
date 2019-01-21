@@ -4,7 +4,7 @@ open System
 open System.Net
 open WebGateway
 
-let urls = [
+let urlList = [
     "http://www.google.co.uk" 
     "http://www.google.couk"
     "http:////www.google.couk"]
@@ -40,7 +40,7 @@ let asyncMap f x = async {
 
 // using seq<'a>
 let run = 
-    urls 
+    urlList 
     |> Seq.choose isValidUri 
     |> Seq.map isValidRemoteHost
     // Async<Uri option> -> Uri Option

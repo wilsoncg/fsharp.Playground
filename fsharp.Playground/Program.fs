@@ -25,6 +25,7 @@ let main argv =
         printfn "run (s)equence example"
         printfn "run (a)sync sequence example"
         printfn "run (w)riter example"
+        printfn "run async w(r)iter example"
         Console.ReadKey(true) // console blocked while waiting for input
     let readKeys = Seq.initInfinite(fun _ -> action())
     let parse (x:ConsoleKeyInfo) =
@@ -40,6 +41,12 @@ let main argv =
         | ConsoleKey.W -> 
             printfn "Run (w)"
             let w = WriterMonadExample.writerWithLog 3 5 |> Writer.run
+            match w with
+            | (r, log) -> printfn "result %i" r; printfn "log"; log |> Seq.iter (printfn "%s")
+            None
+         | ConsoleKey.R -> 
+            printfn "Run (r)"
+            let w = WriterMonadExample.asyncWriter "http://news.bbc.co.uk" |> Writer.run
             match w with
             | (r, log) -> printfn "result %i" r; printfn "log"; log |> Seq.iter (printfn "%s")
             None

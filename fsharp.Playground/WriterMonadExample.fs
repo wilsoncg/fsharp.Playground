@@ -14,8 +14,10 @@ module WriterMonadExample
 
 open FSharpPlus
 open FSharpPlus.Data
+open WebGateway
+open System
 
-let logNumber x =
+let private logNumber x =
     Writer (x, ["Got number: " + (x |> string)])
 
 let writerWithLog a b = 
@@ -24,4 +26,22 @@ let writerWithLog a b =
      let! b' = logNumber b
      do! tell ["multiplied both numbers"]
      return (a'*b')
+    }
+
+// >>= 'bind'
+
+let private logFetch x =
+    //let fetchPromise = fetch (x.url |> Uri |> Some)
+    let u = x.url |> Uri |> Some
+    Writer (u, ["Fetching url: " + (x.url |> string)])
+
+let asyncThing = async { return String.Empty }
+
+let asyncWriter url = 
+    let inline cont (x:Async<_>) : WriterT<Async<_>> = liftAsync x
+    monad {
+     let! c = logFetch url
+     do! cont <| asyncThing
+     //do! asyncThing
+     return ()
     }

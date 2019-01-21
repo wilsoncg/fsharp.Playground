@@ -6,6 +6,17 @@
 
     type httpClient() = inherit HttpClient()
 
+    type WebPage = {
+        url : string
+        content : string Option }
+    let fromUrl u = { url=u; content=None}
+
+    let urls = [
+        { url="https://www.google.co.uk"; content=None }
+        { url="https://news.bbc.co.uk"; content=None }
+        { url="https://www.guardian.co.uk"; content=None }
+        { url="https://www.theregister.co.uk"; content=None }]
+
     // possibly use 'using' keyword to pass in IDisposable httpClient
     // timeout results in TaskCancelled exception which is not handled correctly
     let fetch (url:Uri Option) =
