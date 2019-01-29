@@ -17,13 +17,13 @@ open FSharpPlus.Data
 open WebGateway
 open System
 
-let private logNumber x =
-    Writer (x, ["Got number: " + (x |> string)])
+let private log x =
+    Writer (x, ["Got: " + (x |> string)])
 
 let writerWithLog a b = 
     monad {
-     let! a' = logNumber a
-     let! b' = logNumber b
+     let! a' = log a
+     let! b' = log b
      do! tell ["multiplied both numbers"]
      return (a'*b')
     }
@@ -35,13 +35,20 @@ let private logFetch x =
     let u = x.url |> Uri |> Some
     Writer (u, ["Fetching url: " + (x.url |> string)])
 
-let asyncThing = async { return String.Empty }
+let asyncThing = async { return "thing" }
+let otherAsyncThing s = async { return s + " other thing" }
+let asyncWriter s = async {
+    return monad {
+        let! a = log s
+        return a
+    }
+}
 
-let asyncWriter url = 
+let run = 
     let inline cont (x:Async<_>) : WriterT<Async<_>> = liftAsync x
     monad {
-     let! c = logFetch url
-     do! cont <| asyncThing
+     let! x = liftAsync asyncThing
+     let! y = WriterT (otherAsyncThing x)
      //do! asyncThing
-     return ()
+     return y
     }
