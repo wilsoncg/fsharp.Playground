@@ -46,9 +46,9 @@ let main argv =
             None
          | ConsoleKey.R -> 
             printfn "Run (r)"
-            let w = WriterMonadExample.asyncWriter "http://news.bbc.co.uk" |> Writer.run
-            match w with
-            | (r, log) -> printfn "result %i" r; printfn "log"; log |> Seq.iter (printfn "%s")
+            //let w = WriterMonadExample.asyncWriter "http://news.bbc.co.uk" |> Writer.run
+            //match w with
+            //| (r, log) -> printfn "result %i" r; printfn "log"; log |> Seq.iter (printfn "%s")
             None
         | ConsoleKey.Escape -> Some x.Key
         | ConsoleKey.Q -> Some x.Key

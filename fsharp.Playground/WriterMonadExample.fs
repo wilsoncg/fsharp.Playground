@@ -44,11 +44,12 @@ let asyncWriter s = async {
     }
 }
 
-let run = 
-    let inline cont (x:Async<_>) : WriterT<Async<_>> = liftAsync x
-    monad {
-     let! x = liftAsync asyncThing
-     let! y = WriterT (otherAsyncThing x)
-     //do! asyncThing
-     return y
-    }
+// monad transformer
+//let something : WriterT<Async<string>> = 
+//    //let inline cont (x:Async<_>) : WriterT<Async<_>> = liftAsync x
+//    monad {
+//     let! x = liftAsync asyncThing
+//     //do! asyncThing
+//     return x
+//    }
+//let (_, log) = something |> Writer.run
