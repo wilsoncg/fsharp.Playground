@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="TypicalWorkflow.fs" />
+    <Compile Include="TypicalWorkflowTests.fs" />
     <Compile Include="WebGateway.fs" />
     <Compile Include="SeqExample.fs" />
     <Compile Include="AsyncSeqExample.fs" />
@@ -16,6 +18,9 @@
   <ItemGroup>
     <PackageReference Include="FSharp.Control.AsyncSeq" Version="2.0.21" />
     <PackageReference Include="FSharpPlus" Version="1.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>
 
 </Project>
