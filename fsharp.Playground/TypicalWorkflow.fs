@@ -53,7 +53,13 @@ let isCurrencyFound (r:Request) =
 let validate r =
   r 
   |> Result.bind isCustomerProvided
+  |> Result.bind isAmountProvided
+  |> Result.bind isCurrencyProvided
   |> Result.bind isPaymentMethodProvided
+  |> Result.bind isCurrencyFound
 
-let requestAndTakePayment (r:Request) =
+let MonadicValidation (r:Request) =
  validate (Ok r)
+
+let ApplicativeValidation (r:Request -> Result<Request, List<DomainErrorMessage>>) =
+ Ok r
