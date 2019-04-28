@@ -7,6 +7,15 @@
 ### Other ideas:
 * [IO Monad](http://theinnerlight.github.io/NovelIO/oopintro.html)
 
+### Applicatives & Validation:
+Extensions for Result type
+* [FsToolkit.ErrorHandling](https://github.com/demystifyfp/FsToolkit.ErrorHandling)
+
+Support in Computation Expressions (CE)
+* [RFC-FS-1063](https://github.com/fsharp/fslang-design/blob/master/RFCs/FS-1063-support-letbang-andbang-for-applicative-functors.md) - Overview of applicatives
+* [PullRequest 5696](https://github.com/Microsoft/visualfsharp/pull/5696)
+* [FsLang issue 579](https://github.com/fsharp/fslang-suggestions/issues/579)
+
 ##### If Tests do not appear in VS Test Explorer
 [Follow steps outlined](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-fsharp-with-nunit)  (install from nuget)
 * Microsoft.NET.Test.Sdk
