@@ -27,9 +27,9 @@ type DomainErrorMessage =
  | CurrencyNotFound
  | PaymentMethodRestrictedForCustomer
 
-let failCheck a f (error:DomainErrorMessage) =
+let failCheck request f (error:DomainErrorMessage) =
  if f then
-    Ok a    
+    Ok request
  else
     Error (error)
     
@@ -50,8 +50,8 @@ let isCurrencyProvided (r:Request) =
 let isCurrencyFound (r:Request) =
  failCheck r (currencyFound r.Currency) DomainErrorMessage.CurrencyNotFound
 
-let validate r =
-  r 
+let validate result =
+  result 
   |> Result.bind isCustomerProvided
   |> Result.bind isAmountProvided
   |> Result.bind isCurrencyProvided
@@ -61,5 +61,11 @@ let validate r =
 let MonadicValidation (r:Request) =
  validate (Ok r)
 
-let ApplicativeValidation (r:Request -> Result<Request, List<DomainErrorMessage>>) =
- Ok r
+let ApplicativeValidation (r:Request) =
+ let check r f (errors:List<DomainErrorMessage>) =
+  if f then
+   Ok r
+  else 
+   Error (errors)
+ let f = r.Amount > 0m
+ check r f []

@@ -14,6 +14,11 @@ type TestClass() =
   | Error result -> 
    result |> should equal expected 
 
+ let shouldBeOk result =
+  match result with
+  | Ok result -> should equal Ok
+  | Error result -> failwith "Expected Ok but got Error: %A"
+
  [<Test>]
  member this.``Request with CustomerId 0 is rejected``() =
   let request = { CustomerId = 0; Amount = -1m; Currency = ""; PaymentMethodId = 1 }
@@ -37,3 +42,9 @@ type TestClass() =
   let request = { CustomerId = 1; Amount = 1m; Currency = "BTC"; PaymentMethodId = 1 }
   let result = TypicalWorkflow.MonadicValidation request
   shouldBeError result DomainErrorMessage.CurrencyNotFound
+
+ [<Test>]
+ member this.``All errors in Request are returned``() =
+  let request = { CustomerId = 1; Amount = 1m; Currency = "BTC"; PaymentMethodId = 1 }
+  let result = TypicalWorkflow.ApplicativeValidation request
+  result |> should equal Result.Ok 
