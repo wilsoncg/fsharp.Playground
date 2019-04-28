@@ -50,6 +50,8 @@ let isCurrencyProvided (r:Request) =
 let isCurrencyFound (r:Request) =
  failCheck r (currencyFound r.Currency) DomainErrorMessage.CurrencyNotFound
 
+let inline (>>=) x f = Result.bind f x
+
 let validate result =
   result 
   |> Result.bind isCustomerProvided
@@ -67,5 +69,6 @@ let ApplicativeValidation (r:Request) =
    Ok r
   else 
    Error (errors)
- let f = r.Amount > 0m
- check r f []
+ let amountPositive = r.Amount > 0m
+ //Result.mapError 
+ check r amountPositive []
