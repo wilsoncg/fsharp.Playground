@@ -1,15 +1,20 @@
 ﻿module TypicalWorkflowTests
 
 open System
-open Microsoft.VisualStudio.TestTools.UnitTesting
+open NUnit.Framework
 open TypicalWorkflow
+open FsUnit
 
-[<TestClass>]
-type TestClass () =
-
- [<TestMethod>]
- member this.Test() =
-  let request = { CustomerId = -1; Amount = -1m; Currency = ""; PaymentMethodId = 1 }
-  //let expected (s:Result<Request,DomainErrorMessage>) = Error request DomainErrorMessage.CustomerIdRequired
-  let actual = TypicalWorkflow.requestAndTakePayment request
-  Assert.AreEqual(Result.Error, actual)
+[<TestFixture>]
+type TestClass() =
+ 
+ [<Test>]
+ member this.``Request with CustomerId 0 is rejected``() =
+  let request = { CustomerId = 0; Amount = -1m; Currency = ""; PaymentMethodId = 1 }
+  let result = TypicalWorkflow.requestAndTakePayment request
+  
+  match result with
+   | Ok result -> failwithf "Expected Error but got Ok: %A" result
+   | Error result -> 
+    let expected = DomainErrorMessage.CustomerIdRequired
+    result |> should equal expected 
