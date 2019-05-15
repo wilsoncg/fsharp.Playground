@@ -71,4 +71,4 @@ let ApplicativeValidation (r:Request) =
    Error (errors)
  let amountPositive = r.Amount > 0m
  //Result.mapError 
- check r amountPositive []
+ check r amountPositive [DomainErrorMessage.AmountRequired]

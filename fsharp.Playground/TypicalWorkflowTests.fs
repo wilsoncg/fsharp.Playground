@@ -14,10 +14,11 @@ type TestClass() =
   | Error result -> 
    result |> should equal expected 
 
- let shouldBeOk result =
+ let shouldNotBeOk result expected =
   match result with
-  | Ok result -> should equal Ok
-  | Error result -> failwith "Expected Ok but got Error: %A"
+  | Ok result -> failwith "Expected Error but got Ok: %A"
+  | Error result -> 
+   result |> should contain expected
 
  [<Test>]
  member this.``Request with CustomerId 0 is rejected``() =
@@ -45,6 +46,7 @@ type TestClass() =
 
  [<Test>]
  member this.``All errors in Request are returned``() =
-  let request = { CustomerId = 1; Amount = 1m; Currency = "BTC"; PaymentMethodId = 1 }
+  let request = { CustomerId = 1; Amount = 0m; Currency = "BTC"; PaymentMethodId = 1 }
   let result = TypicalWorkflow.ApplicativeValidation request
-  result |> should equal Result.Ok 
+  //result |> should equal Ok 
+  shouldNotBeOk result DomainErrorMessage.AmountRequired
