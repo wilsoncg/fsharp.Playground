@@ -6,7 +6,7 @@ open TypicalWorkflow
 open FsUnit
 
 [<TestFixture>]
-type TestClass() =
+type Tests() =
  
  let shouldBeError result expected =
   match result with

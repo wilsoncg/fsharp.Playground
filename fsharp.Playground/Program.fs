@@ -2,10 +2,15 @@
 
 open System
 open System.Threading
+open Microsoft.Extensions.Hosting
 open FSharpPlus.Data
 
 [<EntryPoint>]
 let main argv =
+    let host = 
+     HostBuilder()
+      .Build()
+
     let exit() =
         printfn "\nExiting..."
         Thread.Sleep 1000

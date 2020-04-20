@@ -3,6 +3,7 @@
 open System
 open System.Net
 open WebGateway
+open System.Net.Http
 
 let urlList = [
     "http://www.google.co.uk" 
@@ -40,12 +41,14 @@ let asyncMap f x = async {
 
 // using seq<'a>
 let run = 
-    urlList 
+ let client = new HttpClient()
+ let fetch' url = fetch client url
+ urlList 
     |> Seq.choose isValidUri 
     |> Seq.map isValidRemoteHost
     // Async<Uri option> -> Uri Option
     |> Seq.map (fun f -> f |> Async.RunSynchronously)
-    |> Seq.map fetch 
+    |> Seq.map fetch'
     |> Async.Parallel
     |> Async.RunSynchronously 
     |> Seq.iter (fun s -> printfn "Got result: %s" s)
