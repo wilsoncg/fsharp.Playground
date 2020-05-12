@@ -1,28 +1,30 @@
 ﻿module AsyncSeqExample
 
 open System
+open System.Net.Http
 open WebGateway
 open FSharp.Control
 
 // https://fsprojects.github.io/FSharp.Control.AsyncSeq/library/AsyncSeq.html
 
-let getContent (page:WebPage) = 
-    //fetch (Some (Uri page.url))
-    page.url |> Uri |> Some |> fetch
-
-let urls' = asyncSeq { 
-    for u in urls do 
+let urls' = 
+ let client = new HttpClient()
+ asyncSeq { 
+    for p in pages do
      try 
-      let! c = getContent u
+      let! c = p.url |> Uri |> Some |> fetch client
       let c' = if String.IsNullOrWhiteSpace(c) then None else Some c
-      yield { url = u.url; content = c' }
+      yield { url = p.url; content = c' }
      with _ ->
-      yield { url = u.url; content = None }
-}
+      yield { url = p.url; content = None }
+ }
 
 let htmlHead (html:string) =
     let index = html.IndexOf("<head>")
-    html |> Seq.skip index |> Seq.take 100 |> String.Concat
+    html 
+    |> Seq.skip index 
+    |> Seq.take 100 
+    |> String.Concat
 
 // Elements are evaluated asynchronously which could take some time,
 // so use async to avoid blocking
