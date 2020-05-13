@@ -13,6 +13,7 @@
     <Compile Include="SeqExample.fs" />
     <Compile Include="AsyncSeqExample.fs" />
     <Compile Include="WriterMonadExample.fs" />
+    <Compile Include="ReaderMonadExample.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

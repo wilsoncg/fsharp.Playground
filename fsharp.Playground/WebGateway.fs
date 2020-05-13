@@ -53,3 +53,7 @@
         | false -> None
     let isValidRemoteHost uri =
         dnsLookup uri
+
+    let htmlTitle (html:string) =
+     let index = html.IndexOf("<title>")
+     html |> Seq.skip index |> Seq.take 100 |> String.Concat

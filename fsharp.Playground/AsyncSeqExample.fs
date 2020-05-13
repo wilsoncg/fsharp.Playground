@@ -20,16 +20,12 @@ let urls' = asyncSeq {
       yield { url = u.url; content = None }
 }
 
-let htmlHead (html:string) =
-    let index = html.IndexOf("<head>")
-    html |> Seq.skip index |> Seq.take 100 |> String.Concat
-
 // Elements are evaluated asynchronously which could take some time,
 // so use async to avoid blocking
 let run = 
     async {
         for u in urls' do
         match u.content with
-        | Some c -> printfn "url %s \n %s" u.url (htmlHead c)
+        | Some c -> printfn "url %s \n %s" u.url (htmlTitle c)
         | None -> printfn "no content for %s" u.url
     }

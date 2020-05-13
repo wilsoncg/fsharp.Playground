@@ -3,6 +3,7 @@
 open System
 open System.Threading
 open FSharpPlus.Data
+open WebGateway
 
 [<EntryPoint>]
 let main argv =
@@ -26,6 +27,7 @@ let main argv =
         printfn "run (a)sync sequence example"
         printfn "run (w)riter example"
         printfn "run async w(r)iter example"
+        printfn "run monad reader (d)i example"
         Console.ReadKey(true) // console blocked while waiting for input
     let readKeys = Seq.initInfinite(fun _ -> action())
     let parse (x:ConsoleKeyInfo) =
@@ -36,20 +38,33 @@ let main argv =
             None
         | ConsoleKey.A -> 
             printfn "Run (a)"
-            AsyncSeqExample.run |> Async.Start
+            AsyncSeqExample.run 
+            |> Async.Start
             None
         | ConsoleKey.W -> 
             printfn "Run (w)"
-            let w = WriterMonadExample.writerWithLog 3 5 |> Writer.run
+            let w = 
+             WriterMonadExample.writerWithLog 3 5 
+             |> Writer.run
             match w with
-            | (r, log) -> printfn "result %i" r; printfn "log"; log |> Seq.iter (printfn "%s")
+            | (r, log) -> 
+                printfn "result %i" r
+                printfn "log"; log |> Seq.iter (printfn "%s")
             None
-         | ConsoleKey.R -> 
+        | ConsoleKey.R -> 
             printfn "Run (r)"
             //let w = WriterMonadExample.asyncWriter "http://news.bbc.co.uk" |> Writer.run
             //match w with
             //| (r, log) -> printfn "result %i" r; printfn "log"; log |> Seq.iter (printfn "%s")
             None
+        | ConsoleKey.D ->
+            printfn "Run (d)ependency injection"
+            let s =
+             ReaderMonadExample.run
+             |> Async.RunSynchronously
+             |> htmlTitle
+            printfn "Got result: %s" s
+            None       
         | ConsoleKey.Escape -> Some x.Key
         | ConsoleKey.Q -> Some x.Key
         | _ -> 
