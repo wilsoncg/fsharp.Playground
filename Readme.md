@@ -9,8 +9,18 @@
 * [Advanced functional programming in F# using F#+](https://www.youtube.com/watch?v=pxJCHJgG8ws) - [slides](https://starychfojtu.github.io/#/)
 * [Reinventing the Reader monad](https://fsharpforfunandprofit.com/posts/elevated-world-6/)
 
+### Writer Monad:
+* [Writer monad with pictures - Aditya Bhargava](http://adit.io/posts/2013-06-10-three-useful-monads.html#the-writer-monad)
+* [An example implementation of a writer monad - Matthew Podwysocki](http://codebetter.com/matthewpodwysocki/2010/02/02/a-kick-in-the-monads-writer-edition/)
+* [Stateful computations in F# with update monads - Thomas Petricek](http://tomasp.net/blog/2014/update-monads/)
+* [A monad writer for F# - Nicolas Perez](https://hackernoon.com/a-monad-writer-for-f-26aa987e4a3a)
+* [Event sourcing using writer monad - Nicolas Perez](https://hackernoon.com/event-sourcing-using-writer-monad-b26a390285a)
+* [F#+ API reference Writer<'monoid,'t>](https://fsprojects.github.io/FSharpPlus/reference/fsharpplus-data-writer-2.html)
+
 ### Other ideas:
 * [IO Monad](http://theinnerlight.github.io/NovelIO/oopintro.html)
+* [Combining free Monads in F# - Mark Seemann](https://blog.ploeh.dk/2017/07/31/combining-free-monads-in-f/)
+* [F# free monad recipe - Mark Seemann](https://blog.ploeh.dk/2017/08/07/f-free-monad-recipe/)
 
 ### Applicatives & Validation:
 Extensions for Result type
