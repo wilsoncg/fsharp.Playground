@@ -26,6 +26,7 @@ let main argv =
         printfn "run (s)equence example"
         printfn "run (a)sync sequence example"
         printfn "run (w)riter example"
+        printfn "run (f)etcher writer example"
         printfn "run async w(r)iter example"
         printfn "run monad reader (d)i example"
         Console.ReadKey(true) // console blocked while waiting for input
@@ -48,9 +49,12 @@ let main argv =
              |> Writer.run
             match w with
             | (r, log) -> 
-                printfn "result %i" r
                 printfn "log"; log |> Seq.iter (printfn "%s")
             None
+        | ConsoleKey.F ->
+            printfn "Run (f)"
+            WriterMonadTransformerExample.run
+            None        
         | ConsoleKey.R -> 
             printfn "Run (r)"
             //let w = WriterMonadExample.asyncWriter "http://news.bbc.co.uk" |> Writer.run
