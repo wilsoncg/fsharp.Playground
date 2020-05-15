@@ -3,6 +3,7 @@ module ReaderMonadExample
 open System.Net.Http
 open FSharpPlus
 open FSharpPlus.Data
+open WebGateway
 
 type Env() =
     let client = new HttpClient()
@@ -23,3 +24,6 @@ let init (uri:string) = monad {
 
 let run = 
     ReaderT.run (init "http://news.bbc.co.uk") (Env())
+    |> Async.RunSynchronously
+    |> htmlTitle
+    |> printfn "Got result: %s"
