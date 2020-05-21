@@ -39,12 +39,12 @@ let asyncMap f x = async {
 }
 
 // using seq<'a>
-let run = 
+let run() = 
     urlList 
     |> Seq.choose isValidUri 
     |> Seq.map isValidRemoteHost
     // Async<Uri option> -> Uri Option
-    |> Seq.map (fun f -> f |> Async.RunSynchronously)
+    |> Seq.map (Async.RunSynchronously)
     |> Seq.map fetch 
     |> Async.Parallel
     |> Async.RunSynchronously 

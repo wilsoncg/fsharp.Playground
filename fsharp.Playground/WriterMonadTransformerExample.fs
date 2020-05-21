@@ -12,7 +12,7 @@ type Observation<'a> = {
 } with
   member this.Print() =
    sprintf "Time: %s - Op: %s" 
-    (this.Time.ToString("dd/MM/yyyy HH:MM")) this.Operation
+    (this.Time.ToString("dd/MM/yyyy HH:mm")) this.Operation
 
 let private print (log:list<Observation<'a>>) r =
    let p =
@@ -30,7 +30,7 @@ let private fetcherWriter (s:string) = monad {
         let! a = logFetch s
         return a
     }
-let run =
+let run() =
     let w:string * Observation<_> list = 
         fetcherWriter "http://google.co.uk" 
         |> Writer.run
@@ -49,11 +49,11 @@ let private asyncWriter (s:string) = monad {
         return! asyncFetch s
     }
 
-let asyncRun =
+let asyncRun() =
     let w = 
      WriterT.run (asyncWriter "")
     match w with
-    | (r,log) -> r |> Async.RunSynchronously
+    | (r,log) -> r |> Async.RunSynchronously |> print log |> printfn "%s"
 
 //let asyncThing = async { return "thing" }
 //let otherAsyncThing s = async { return s + " other thing" }

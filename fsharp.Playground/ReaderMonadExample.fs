@@ -22,7 +22,7 @@ let init (uri:string) = monad {
     return! getData uri
 }
 
-let run = 
+let run() = 
     ReaderT.run (init "http://news.bbc.co.uk") (Env())
     |> Async.RunSynchronously
     |> htmlTitle

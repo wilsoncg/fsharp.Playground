@@ -35,7 +35,7 @@ let main argv =
         match x.Key with 
         | ConsoleKey.S -> 
             printfn "Run (s)"
-            let s = SeqExample.run
+            SeqExample.run()
             None
         | ConsoleKey.A -> 
             printfn "Run (a)"
@@ -43,20 +43,20 @@ let main argv =
             |> Async.Start
             None
         | ConsoleKey.W -> 
-            printfn "Run (w)"
-            WriterMonadExample.run
+            printfn "(w)riter"
+            WriterMonadExample.run()
             None
         | ConsoleKey.F ->
-            printfn "Run (f)"
-            let f = WriterMonadTransformerExample.run
+            printfn "(f)etcher writer"
+            WriterMonadTransformerExample.run()
             None        
         | ConsoleKey.R -> 
-            printfn "Run (r)"
-            WriterMonadTransformerExample.asyncRun
+            printfn "async w(r)iter"
+            WriterMonadTransformerExample.asyncRun()
             None
         | ConsoleKey.D ->
-            printfn "Run (d)ependency injection"
-            ReaderMonadExample.run
+            printfn "monad reader (d)i"
+            ReaderMonadExample.run()
             None       
         | ConsoleKey.Escape -> Some x.Key
         | ConsoleKey.Q -> Some x.Key

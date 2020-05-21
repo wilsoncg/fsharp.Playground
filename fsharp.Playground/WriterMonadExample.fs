@@ -12,7 +12,7 @@ let private writerWithLog a b = monad {
  return result
 }
 
-let run = 
+let run() = 
  let w = 
   writerWithLog 3 5 
   |> Writer.run
